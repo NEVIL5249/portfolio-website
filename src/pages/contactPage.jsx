@@ -7,13 +7,12 @@ import { useNavigate } from "react-router-dom";
 const FloatingNav = ({ active }) => {
   const navigate = useNavigate();
 
-const navItems = [
-  { id: "home", icon: <Home className="h-4 w-4" />, label: "Home", type: "route", path: "/" },
-  { id: "projects", icon: <FolderGit2 className="h-4 w-4" />, label: "Projects", type: "route", path: "/projects" },
-  { id: "experience", icon: <TrendingUp className="h-4 w-4" />, label: "Experience", type: "route", path: "/experience" },
-  { id: "contact", icon: <Mail className="h-4 w-4" />, label: "Contact", type: "route", path: "/contact" },
-];
-
+  const navItems = [
+    { id: "home", icon: <Home className="h-4 w-4" />, label: "Home", type: "route", path: "/" },
+    { id: "projects", icon: <FolderGit2 className="h-4 w-4" />, label: "Projects", type: "route", path: "/projects" },
+    { id: "experience", icon: <TrendingUp className="h-4 w-4" />, label: "Experience", type: "route", path: "/experience" },
+    { id: "contact", icon: <Mail className="h-4 w-4" />, label: "Contact", type: "route", path: "/contact" },
+  ];
 
   const handleClick = (item) => {
     if (item.type === "route") navigate(item.path);
@@ -49,6 +48,7 @@ const ContactPage = () => {
     subject: "",
     message: "",
   });
+  const [status, setStatus] = useState(""); // success or error messages
 
   useEffect(() => {
     setIsVisible(true);
@@ -58,9 +58,26 @@ const ContactPage = () => {
   const handleInputChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+
+    try {
+      const response = await fetch("https://formspree.io/f/mdkwaplz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setStatus("success");
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      } else {
+        setStatus("error");
+      }
+    } catch (error) {
+      console.error(error);
+      setStatus("error");
+    }
   };
 
   return (
@@ -175,20 +192,34 @@ const ContactPage = () => {
           {/* Contact Form */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
             <h2 className="text-2xl font-light text-gray-900 mb-8">Send a Message</h2>
-            <div className="space-y-6">
+            
+            {status === "success" && (
+              <p className="mb-4 text-green-600 font-medium">✅ Message sent successfully!</p>
+            )}
+            {status === "error" && (
+              <p className="mb-4 text-red-600 font-medium">❌ Something went wrong. Please try again.</p>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
               {["name", "email", "subject"].map((field) => (
                 <div key={field}>
-                  <label className="block text-gray-700 font-medium mb-3">{`Your ${field.charAt(0).toUpperCase() + field.slice(1)}`}</label>
+                  <label className="block text-gray-700 font-medium mb-3">
+                    Your {field.charAt(0).toUpperCase() + field.slice(1)}
+                  </label>
                   <input
                     type={field === "email" ? "email" : "text"}
                     name={field}
                     value={formData[field]}
                     onChange={handleInputChange}
                     placeholder={`Enter your ${field}`}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-colors"
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md 
+                               focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                               focus:outline-none transition-colors"
                   />
                 </div>
               ))}
+
               <div>
                 <label className="block text-gray-700 font-medium mb-3">Message</label>
                 <textarea
@@ -197,21 +228,25 @@ const ContactPage = () => {
                   value={formData.message}
                   onChange={handleInputChange}
                   placeholder="Write your message..."
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-colors resize-none"
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-md 
+                             focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                             focus:outline-none transition-colors resize-none"
                 ></textarea>
               </div>
+
               <button
-                onClick={handleSubmit}
-                className="w-full flex items-center justify-center gap-3 bg-blue-600 text-white font-medium py-4 rounded-md hover:bg-blue-700 transition-colors shadow-sm"
+                type="submit"
+                className="w-full flex items-center justify-center gap-3 
+                           bg-blue-600 text-white font-medium py-4 rounded-md 
+                           hover:bg-blue-700 transition-colors shadow-sm"
               >
                 <Send className="w-5 h-5" /> Send Message
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </section>
-
-      {/* Back to Home */}
 
       {/* Floating Navbar */}
       <FloatingNav active="contact" />
