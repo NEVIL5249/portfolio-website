@@ -142,18 +142,6 @@ const ContactPage = () => {
                 </div>
 
                 <div className="flex items-start gap-6">
-                  <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center border border-green-200">
-                    <Phone className="w-6 h-6 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900 mb-1">Phone</p>
-                    <a href="tel:+917878805151" className="text-green-600 hover:text-green-700 text-lg">
-                      +91 7878805151
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-6">
                   <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center border border-purple-200">
                     <MapPin className="w-6 h-6 text-purple-600" />
                   </div>
