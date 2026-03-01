@@ -98,7 +98,6 @@ return (
       >
         {[
           { href: "mailto:nevilg8690@gmail.com", icon: Mail, label: "Email" },
-          { href: "tel:+917878805151", icon: Phone, label: "Phone" },
           { href: "https://www.linkedin.com/in/nevilgadhia/", icon: Linkedin, label: "LinkedIn" },
           { href: "https://github.com/NEVIL5249", icon: Github, label: "GitHub" },
         ].map((social, index) => (
